@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src='../../../js/jquery-1.12.4.js'></script>
+</head>
+<style>
+      .weatherBox1 {
+        position: relative;
+           margin: 0 auto;
+           background-color: rgba(51,120,131,.7);
+              width: 1000px;
+              height: 460px;
+            
+           
+              
+        }
+        .leftBox2 {
+            position: absolute;
+            left: 50px;
+            top: 25px;
+            z-index: 1;
+            width: 200px;
+            height: 130px;
+            color: white;
+            
+        }
+        .centerBox1{
+            position: absolute;
+            left: 250px;
+            top: 50px;
+            z-index: 1;
+            width: 500px;
+            height:300px;
+        }
+        .city {
+            font-size: 28px;
+        }
+        .today {
+            font-size: 18px;
+        }
+        .timeImg {
+            background-image: url(../../../img/icons_time.png);
+            background-repeat: no-repeat;
+            line-height: 20px;
+            width: 90px;
+            left:50%;
+            height: 20px;
+        }
+        .timeImg span {
+            display: inline-block;
+            height: 20px;
+            font-size: 20px;
+            margin-left: 40px;
+        }
+        .centerBox1 {
+            text-align: center;
+        }
+        .centerBox1 .yun .img {
+            width: 150px;
+            height: 80px;
+        }
+        .centerBox1 .temperature {
+             height: 140px;
+             width: 100%;
+                line-height: 140px;
+               text-align: center;
+               font-size: 125px;
+                color: #fff;
+        }
+        .water {
+            display: inline-block;
+              width: 450px;
+              height: 40px;
+              line-height: 40px;
+              background-color: rgb(75, 121, 148);
+              border-radius: 20px;
+              color: white;
+        }
+        .water:hover {
+            background-color: rgb(25, 59, 65);
+        }
+        .water i {
+            display: inline-block;
+            font-style: normal;
+            margin-left: 14px;
+            margin-right: 14px;
+        }
+        .searchWeather {
+           position: absolute;
+            right: 0px;
+            vertical-align: middle;
+        }
+        #input1 {
+            width: 90px;
+            height: 20px;
+            background-color: rgba(1,1,1,0);
+            color: white;
+        }
+        #btn1 {
+            width: 50px;
+            height: 20px;
+            background-color: rgba(1,1,1,0);
+            color: white;
+            border: 1px solid white;
+        }
+        input::-webkit-input-placeholder{
+            color:white;
+        }
+        input::-moz-placeholder{   /* Mozilla Firefox 19+ */
+            color:white;
+        }
+        input:-moz-placeholder{    /* Mozilla Firefox 4 to 18 */
+            color:white;
+        }
+        input:-ms-input-placeholder{  /* Internet Explorer 10-11 */ 
+            color:white;
+        }
+         .closeDiv {
+             position: absolute;
+             right: -30px;
+             top:0px;
+           }
+        /* ------------------------------------------------------------------ */
+</style>
+<body>
+    <div class='weatherBox1' id='weatherBox1'>
+        <div class='closeDiv'>
+            <img id='closeImg' src="../../../img/closeBtn.PNG" alt="">
+        </div>
+         <div class="leftBox2">
+             <h4 class="city1">西安</h4>
+             <h4 class="today1">8日星期三</h4>
+             <div class="timeImg"><span id="updatetime">12:51</span></div>
+         </div>
+         <div class="centerBox1">
+             <div class="yun"><img src="../../../img/yun.png" alt=""></div>
+             <div class="temperature">22℃</div>
+             <div class="water">
+                 <span id='weather1'>阴</span><i>|</i><span id='fengxiang'>南风1级</span><i>|</i><span id='shidu'>湿度：99%</span>
+             </div>
+         </div>
+         <div class='searchWeather'>
+            <input type="text" id='input1' placeholder="西安">
+            <button id='btn1'>查询</button>
+         </div>
+    </div>
+    <!-- ------------------------------------------------------------------------------- -->
+
+    <script type='text/javascript'>
+        var btn1=document.getElementById('btn1');
+        var input1=document.getElementById('input1');
+        btn1.onclick=function(){
+            var val=input1.value;
+            //发送Ajax
+            var xhr=new XMLHttpRequest();
+            xhr.open('get','http://wthrcdn.etouch.cn/WeatherApi?city='+val);
+            xhr.onreadystatechange = function(){
+                if(xhr.readyState == 4 && xhr.status ==200){
+            //             console.log(xhr.responseXML);//xml字符串
+                        var resp=xhr.responseXML.querySelector("resp");
+                        
+                        console.log(resp);
+                        var city=resp.querySelector('city').innerHTML; //城市
+                        var wendu=resp.querySelector('wendu').innerHTML;//温度
+                        var updatetime=resp.querySelector('updatetime').innerHTML;//更新时间
+                        var fengxiang=resp.querySelector('fengxiang').innerHTML;//风向
+                        var shidu=resp.querySelector('shidu').innerHTML;//湿度
+
+                        var forecast=resp.querySelector('forecast');
+                        var weather=forecast.querySelector('weather');
+                        var xingqi=weather.querySelector('date').innerHTML;//星期
+                        var weatherqq=weather.querySelector('day').querySelector('type').innerHTML;//晴
+              
+
+                        document.querySelector('.city1').innerHTML=city;
+                        document.querySelector('.temperature').innerHTML=wendu+"℃";
+                        document.querySelector('#updatetime').innerHTML= updatetime;
+                        document.querySelector('#fengxiang').innerHTML= fengxiang;
+                        document.querySelector('#shidu').innerHTML= "湿度："+shidu;
+                        document.querySelector('.today1').innerHTML=xingqi;
+                        document.querySelector('#weather1').innerHTML=weatherqq;
+                    }
+            }
+            xhr.send();
+        }
+
+        input1.addEventListener('blur',function(e){
+            var val=input1.value;
+            //发送Ajax
+            var xhr=new XMLHttpRequest();
+            xhr.open('get','http://wthrcdn.etouch.cn/WeatherApi?city='+val);
+            xhr.onreadystatechange = function(){
+                if(xhr.readyState == 4 && xhr.status ==200){
+            //             console.log(xhr.responseXML);//xml字符串
+                        var resp=xhr.responseXML.querySelector("resp");
+                        
+                        console.log(resp);
+                        var city=resp.querySelector('city').innerHTML; //城市
+                        var wendu=resp.querySelector('wendu').innerHTML;//温度
+                        var updatetime=resp.querySelector('updatetime').innerHTML;//更新时间
+                        var fengxiang=resp.querySelector('fengxiang').innerHTML;//风向
+                        var shidu=resp.querySelector('shidu').innerHTML;//湿度
+
+                        var forecast=resp.querySelector('forecast');
+                        var weather=forecast.querySelector('weather');
+                        var xingqi=weather.querySelector('date').innerHTML;//星期
+                        var weatherqq=weather.querySelector('day').querySelector('type').innerHTML;//晴
+              
+
+                        document.querySelector('.city1').innerHTML=city;
+                        document.querySelector('.temperature').innerHTML=wendu+"℃";
+                        document.querySelector('#updatetime').innerHTML= updatetime;
+                        document.querySelector('#fengxiang').innerHTML= fengxiang;
+                        document.querySelector('#shidu').innerHTML= "湿度："+shidu;
+                        document.querySelector('.today1').innerHTML=xingqi;
+                        document.querySelector('#weather1').innerHTML=weatherqq;
+                    }
+            }
+            xhr.send();
+        });
+
+        $('#input1').bind('keydown',function(event){
+	            if(event.keyCode == "13")    
+	            {
+                    var val=input1.value;
+            //发送Ajax
+            var xhr=new XMLHttpRequest();
+            xhr.open('get','http://wthrcdn.etouch.cn/WeatherApi?city='+val);
+            xhr.onreadystatechange = function(){
+                if(xhr.readyState == 4 && xhr.status ==200){
+            //             console.log(xhr.responseXML);//xml字符串
+                        var resp=xhr.responseXML.querySelector("resp");
+                        
+                        console.log(resp);
+                        var city=resp.querySelector('city').innerHTML; //城市
+                        var wendu=resp.querySelector('wendu').innerHTML;//温度
+                        var updatetime=resp.querySelector('updatetime').innerHTML;//更新时间
+                        var fengxiang=resp.querySelector('fengxiang').innerHTML;//风向
+                        var shidu=resp.querySelector('shidu').innerHTML;//湿度
+
+                        var forecast=resp.querySelector('forecast');
+                        var weather=forecast.querySelector('weather');
+                        var xingqi=weather.querySelector('date').innerHTML;//星期
+                        var weatherqq=weather.querySelector('day').querySelector('type').innerHTML;//晴
+              
+
+                        document.querySelector('.city1').innerHTML=city;
+                        document.querySelector('.temperature').innerHTML=wendu+"℃";
+                        document.querySelector('#updatetime').innerHTML= updatetime;
+                        document.querySelector('#fengxiang').innerHTML= fengxiang;
+                        document.querySelector('#shidu').innerHTML= "湿度："+shidu;
+                        document.querySelector('.today1').innerHTML=xingqi;
+                        document.querySelector('#weather1').innerHTML=weatherqq;
+                    }
+            }
+            xhr.send();
+	            }
+       	   });
+
+            //   关闭按钮-----------------------
+            var closeImg=document.getElementById("closeImg");
+            var bigBox=document.getElementById("weatherBox1");
+            closeImg.addEventListener('click',function(){
+                bigBox.style.display='none';
+            });
+
+           
+        </script>
+</body>
+</html>
